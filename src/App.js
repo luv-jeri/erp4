@@ -1,8 +1,9 @@
 import './App.css';
 import Container from '@mui/material/Container';
-import Login from './pages/authentication/login/Login';
-import SignIn from './pages/authentication/signin/Signin';
 import { AuthProvider } from './context/AuthContext';
+import { BrowserRouter as Router } from 'react-router-dom';
+import IndexNav from './navigation/index';
+
 function App() {
   return (
     <Container
@@ -11,9 +12,11 @@ function App() {
         width: '100vw',
       }}
     >
-      <AuthProvider>
-        <SignIn></SignIn>
-      </AuthProvider>
+      <Router>
+        <AuthProvider>
+          <IndexNav />
+        </AuthProvider>
+      </Router>
     </Container>
   );
 }

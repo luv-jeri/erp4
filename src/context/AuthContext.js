@@ -1,14 +1,23 @@
-import React from 'react';
+import {
+  useState,
+  useEffect,
+  useContext,
+  createContext,
+} from 'react';
+
 import {
   getAuth,
   createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  signOut,
 } from 'firebase/auth';
 
-const auth = getAuth();
-const AuthContext = React.createContext();
+import firebase from '../firebase/index';
+
+const { auth } = firebase;
 
 export function useAuth() {
-  const context = React.useContext(AuthContext);
+  const context = useContext(AuthContext);
   if (!context) {
     throw new Error(
       'useAuth must be used within an AuthProvider'
@@ -17,14 +26,15 @@ export function useAuth() {
   return context;
 }
 
+const AuthContext = createContext();
 export function AuthProvider({ children }) {
-  const [user, setUser] = React.useState(null);
+  const [user, setUser] = useState(null);
 
-  React.useEffect(() => {
+  useEffect(() => {
     const authListener = auth.onAuthStateChanged(
       (user) => {
-        console.log('user', user);
-        // setUser(user);
+        console.log('User from context ->', user);
+        setUser(user);
       }
     );
     return authListener;
@@ -38,10 +48,24 @@ export function AuthProvider({ children }) {
     );
   }
 
+  async function signin(email, password) {
+    signInWithEmailAndPassword(
+      auth,
+      email,
+      password
+    );
+  }
+
+  function signout() {
+    signOut();
+  }
+
   const value = {
     user,
     setUser,
     signup,
+    signin,
+    signout,
   };
 
   return (
