@@ -1,5 +1,6 @@
 import { useState, useEffect, useContext, createContext } from 'react';
-
+import Stack from '@mui/material/Stack';
+import LinearProgress from '@mui/material/LinearProgress';
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
@@ -54,7 +55,15 @@ export function AuthProvider({ children }) {
 
   return (
     <AuthContext.Provider value={value}>
-      {loading ? <div>loading</div> : children}
+      {loading ? (
+        <Stack sx={{ width: '100%', color: 'grey.500' }} spacing={10}>
+          <LinearProgress color='secondary' />
+          <LinearProgress color='success' />
+          <LinearProgress color='inherit' />
+        </Stack>
+      ) : (
+        children
+      )}
     </AuthContext.Provider>
   );
 }
