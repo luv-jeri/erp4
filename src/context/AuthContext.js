@@ -29,11 +29,13 @@ export function useAuth() {
 const AuthContext = createContext();
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const authListener = auth.onAuthStateChanged(
       (user) => {
         console.log('User from context ->', user);
+        setLoading(false);
         setUser(user);
       }
     );
@@ -70,7 +72,7 @@ export function AuthProvider({ children }) {
 
   return (
     <AuthContext.Provider value={value}>
-      {children}
+      {!loading && children}
     </AuthContext.Provider>
   );
 }
