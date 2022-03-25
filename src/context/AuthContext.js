@@ -1,12 +1,6 @@
-import {
-  useState,
-  useEffect,
-  useContext,
-  createContext,
-} from 'react';
+import { useState, useEffect, useContext, createContext } from 'react';
 
 import {
-  getAuth,
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   signOut,
@@ -19,9 +13,7 @@ const { auth } = firebase;
 export function useAuth() {
   const context = useContext(AuthContext);
   if (!context) {
-    throw new Error(
-      'useAuth must be used within an AuthProvider'
-    );
+    throw new Error('useAuth must be used within an AuthProvider');
   }
   return context;
 }
@@ -32,30 +24,20 @@ export function AuthProvider({ children }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const authListener = auth.onAuthStateChanged(
-      (user) => {
-        console.log('User from context ->', user);
-        setLoading(false);
-        setUser(user);
-      }
-    );
+    const authListener = auth.onAuthStateChanged((user) => {
+      console.log('User from context ->', user);
+      setLoading(false);
+      setUser(user);
+    });
     return authListener;
   }, []);
 
   function signup(email, password) {
-    createUserWithEmailAndPassword(
-      auth,
-      email,
-      password
-    );
+    createUserWithEmailAndPassword(auth, email, password);
   }
 
   async function signin(email, password) {
-    signInWithEmailAndPassword(
-      auth,
-      email,
-      password
-    );
+    signInWithEmailAndPassword(auth, email, password);
   }
 
   function signout() {
@@ -72,7 +54,7 @@ export function AuthProvider({ children }) {
 
   return (
     <AuthContext.Provider value={value}>
-      {!loading && children}
+      {loading ? <div>loading</div> : children}
     </AuthContext.Provider>
   );
 }
