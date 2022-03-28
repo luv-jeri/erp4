@@ -5,14 +5,13 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { BrowserRouter as Router } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
+import { ErrorProvider } from './context/ErrorContext';
 
 ReactDOM.render(
   <React.StrictMode>
-    <AuthProvider>
-      <Router>
-        <App />
-      </Router>
-    </AuthProvider>
+    <ErrorProvider>
+     
+    </ErrorProvider>
   </React.StrictMode>,
   document.getElementById('root')
 );

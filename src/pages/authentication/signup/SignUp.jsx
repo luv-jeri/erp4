@@ -5,14 +5,12 @@ import { TextField, Button, Stack, Typography, Container } from '@mui/material';
 import SendIcon from '@mui/icons-material/Send';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import { useNavigate } from 'react-router-dom';
-import Snack from '../../../components/snack'
 
 export default function SignIn() {
   const name = useRef('');
   const email = useRef('');
   const password = useRef('');
   const passwordConfirm = useRef('');
-  const [error, setError] = useState('');
 
   const navigate = useNavigate();
 
@@ -85,20 +83,17 @@ export default function SignIn() {
             variant='contained'
             endIcon={<SendIcon />}
             onClick={async () => {
-              const status = await signup(
+              await signup(
                 email.current.value,
                 password.current.value,
                 name.current.value,
                 passwordConfirm.current.value
               );
-
-              setError(status);
             }}
           >
             Join us !
           </Button>
         </Stack>
-        <Snack open={error} setOpen={setError} message={error} />
       </Container>
     </div>
   );

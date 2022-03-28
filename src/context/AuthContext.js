@@ -11,6 +11,8 @@ import firebase from '../firebase/index';
 //` For Database
 import { doc, setDoc } from 'firebase/firestore';
 
+import { useError } from './ErrorContext';
+
 const { auth, db } = firebase;
 
 export function useAuth() {
@@ -25,6 +27,7 @@ const AuthContext = createContext();
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const { setError } = useError();
 
   useEffect(() => {
     const authListener = auth.onAuthStateChanged((user) => {
@@ -38,10 +41,10 @@ export function AuthProvider({ children }) {
   async function signup(email, password, name, confirmPassword) {
     try {
       if (!name || !email || !password || !confirmPassword) {
-        return 'Please fill all the fields';
+        setError('Please fill all the fields');
       }
       if (password !== confirmPassword) {
-        return 'Passwords do not match';
+        setError('Passwords do not match');
       }
       const newUser = await createUserWithEmailAndPassword(auth, email, password);
       if (newUser) {
@@ -54,19 +57,19 @@ export function AuthProvider({ children }) {
       }
     } catch (error) {
       console.log(error);
-      return error.message;
+      setError(error.message);
     }
   }
 
   async function signin(email, password) {
     try {
       if (!email || !password) {
-        return 'Please fill all the fields';
+        setError('Please fill all the fields');
       }
       await signInWithEmailAndPassword(auth, email, password);
     } catch (error) {
       console.log(error);
-      return error.message;
+      setError(error.message);
     }
   }
 
