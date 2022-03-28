@@ -1,21 +1,20 @@
 import Styles from './SignUp.module.css';
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 import { useAuth } from '../../../context/AuthContext';
-import {
-  TextField,
-  Button,
-  Stack,
-  Typography,
-  Container,
-} from '@mui/material';
-
+import { TextField, Button, Stack, Typography, Container, Snackbar } from '@mui/material';
 import SendIcon from '@mui/icons-material/Send';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import { useNavigate } from 'react-router-dom';
+import MuiAlert from '@mui/material/Alert';
 
 export default function SignIn() {
+  const name = useRef('');
   const email = useRef('');
   const password = useRef('');
   const passwordConfirm = useRef('');
+  const [error, setError] = useState('');
+
+  const navigate = useNavigate();
 
   const { signup } = useAuth();
 
@@ -32,10 +31,7 @@ export default function SignIn() {
         }}
       >
         {' '}
-        <Typography
-          variant='h3'
-          gutterBottom={true}
-        >
+        <Typography variant='h3' gutterBottom={true}>
           {' '}
           Sing Up !
         </Typography>
@@ -52,6 +48,7 @@ export default function SignIn() {
             width: '50%',
           }}
         >
+          <TextField id='text' required label='Name' variant='filled' inputRef={name} />
           <TextField
             id='email'
             required
@@ -74,18 +71,43 @@ export default function SignIn() {
             inputRef={passwordConfirm}
           />
           <Button
+            variant='text'
+            onClick={() => {
+              navigate('/');
+            }}
+            style={{
+              justifyContent: 'flex-start',
+            }}
+          >
+            Already have an account?
+          </Button>
+          <Button
             variant='contained'
             endIcon={<SendIcon />}
             onClick={async () => {
-              await signup(
+              const status = await signup(
                 email.current.value,
-                password.current.value
+                password.current.value,
+                name.current.value,
+                passwordConfirm.current.value
               );
+
+              setError(status);
             }}
           >
-            Sing In
+            Join us !
           </Button>
         </Stack>
+        <Snackbar open={error} onClose={() => setError(false)} autoHideDuration={6000}>
+          <MuiAlert
+            elevation={12}
+            variant='filled'
+            onClose={() => setError(false)}
+            severity='error'
+          >
+            {error}
+          </MuiAlert>
+        </Snackbar>
       </Container>
     </div>
   );

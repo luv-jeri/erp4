@@ -1,21 +1,19 @@
 import Styles from './SignIn.module.css';
 import { useRef } from 'react';
 import { useAuth } from '../../../context/AuthContext';
-import {
-  TextField,
-  Button,
-  Stack,
-  Container,
-} from '@mui/material';
+import { TextField, Button, Stack, Container, Typography } from '@mui/material';
 import SendIcon from '@mui/icons-material/Send';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import { useNavigate } from 'react-router-dom';
 
 export default function SignIn() {
+
   const email = useRef('');
   const password = useRef('');
+  const navigate = useNavigate();
 
   const { signin } = useAuth();
-  
+
   return (
     <Container
       sx={{
@@ -40,13 +38,8 @@ export default function SignIn() {
           width: '50%',
         }}
       >
-        <TextField
-          id='email'
-          required
-          label='Email'
-          variant='filled'
-          inputRef={email}
-        />
+      
+        <TextField id='email' required label='Email' variant='filled' inputRef={email} />
         <TextField
           required
           label='Password'
@@ -55,13 +48,21 @@ export default function SignIn() {
           inputRef={password}
         />
         <Button
+          variant='text'
+          onClick={() => {
+            navigate('/join');
+          }}
+          style={{
+            justifyContent: 'flex-start',
+          }}
+        >
+          New to the app?
+        </Button>
+        <Button
           variant='contained'
           endIcon={<SendIcon />}
           onClick={() => {
-            signin(
-              email.current.value,
-              password.current.value
-            );
+            signin(email.current.value, password.current.value);
           }}
         >
           Login

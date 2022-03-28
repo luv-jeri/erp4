@@ -8,8 +8,10 @@ import {
 } from 'firebase/auth';
 
 import firebase from '../firebase/index';
+//` For Database
+import { doc, setDoc } from 'firebase/firestore';
 
-const { auth } = firebase;
+const { auth, db } = firebase;
 
 export function useAuth() {
   const context = useContext(AuthContext);
@@ -33,8 +35,28 @@ export function AuthProvider({ children }) {
     return authListener;
   }, []);
 
-  function signup(email, password) {
-    createUserWithEmailAndPassword(auth, email, password);
+  async function signup(email, password, name, confirmPassword) {
+    try {
+      if (!name || !email || !password || !confirmPassword) {
+        return 'Please fill all the fields';
+      }
+      if (password !== confirmPassword) {
+        return 'Passwords do not match';
+      }
+      const newUser = await createUserWithEmailAndPassword(auth, email, password);
+      if (newUser) {
+        const ref = doc(db, 'users', 'id');
+        const userDoc = await setDoc(ref, {
+          name,
+          email,
+        });
+        console.log('userDoc', userDoc);
+      }
+      
+    } catch (error) {
+      console.log(error);
+      return error.message;
+    }
   }
 
   async function signin(email, password) {
@@ -42,7 +64,7 @@ export function AuthProvider({ children }) {
   }
 
   function signout() {
-    signOut();
+    signOut(auth);
   }
 
   const value = {
@@ -67,3 +89,11 @@ export function AuthProvider({ children }) {
     </AuthContext.Provider>
   );
 }
+
+// if (!name || !email || !password || !confirmPassword) {
+//   alert('Please fill all the fields');
+// } else if (password !== confirmPassword) {
+//   alert('Passwords do not match');
+// } else {
+//   createUserWithEmailAndPassword(auth, email, password);
+// }
