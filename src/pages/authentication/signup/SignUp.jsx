@@ -1,11 +1,11 @@
 import Styles from './SignUp.module.css';
 import { useRef, useState } from 'react';
 import { useAuth } from '../../../context/AuthContext';
-import { TextField, Button, Stack, Typography, Container, Snackbar } from '@mui/material';
+import { TextField, Button, Stack, Typography, Container } from '@mui/material';
 import SendIcon from '@mui/icons-material/Send';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import { useNavigate } from 'react-router-dom';
-import MuiAlert from '@mui/material/Alert';
+import Snack from '../../../components/snack'
 
 export default function SignIn() {
   const name = useRef('');
@@ -98,16 +98,7 @@ export default function SignIn() {
             Join us !
           </Button>
         </Stack>
-        <Snackbar open={error} onClose={() => setError(false)} autoHideDuration={6000}>
-          <MuiAlert
-            elevation={12}
-            variant='filled'
-            onClose={() => setError(false)}
-            severity='error'
-          >
-            {error}
-          </MuiAlert>
-        </Snackbar>
+        <Snack open={error} setOpen={setError} message={error} />
       </Container>
     </div>
   );

@@ -52,7 +52,6 @@ export function AuthProvider({ children }) {
         });
         console.log('userDoc', userDoc);
       }
-      
     } catch (error) {
       console.log(error);
       return error.message;
@@ -60,7 +59,15 @@ export function AuthProvider({ children }) {
   }
 
   async function signin(email, password) {
-    signInWithEmailAndPassword(auth, email, password);
+    try {
+      if (!email || !password) {
+        return 'Please fill all the fields';
+      }
+      await signInWithEmailAndPassword(auth, email, password);
+    } catch (error) {
+      console.log(error);
+      return error.message;
+    }
   }
 
   function signout() {

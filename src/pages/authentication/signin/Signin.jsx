@@ -1,12 +1,14 @@
 import Styles from './SignIn.module.css';
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 import { useAuth } from '../../../context/AuthContext';
 import { TextField, Button, Stack, Container, Typography } from '@mui/material';
 import SendIcon from '@mui/icons-material/Send';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import { useNavigate } from 'react-router-dom';
+import Snack from '../../../components/snack';
 
 export default function SignIn() {
+  const [error, setError] = useState('');
 
   const email = useRef('');
   const password = useRef('');
@@ -38,7 +40,6 @@ export default function SignIn() {
           width: '50%',
         }}
       >
-      
         <TextField id='email' required label='Email' variant='filled' inputRef={email} />
         <TextField
           required
@@ -61,13 +62,15 @@ export default function SignIn() {
         <Button
           variant='contained'
           endIcon={<SendIcon />}
-          onClick={() => {
-            signin(email.current.value, password.current.value);
+          onClick={async () => {
+            const status = await signin(email.current.value, password.current.value);
+            setError(status);
           }}
         >
           Login
         </Button>
       </Stack>
+      <Snack open={error} setOpen={setError} message={error} />
     </Container>
   );
 }
