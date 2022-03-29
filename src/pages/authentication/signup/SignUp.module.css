@@ -9,3 +9,13 @@
   justify-content: center;
   align-items: center;
 }
+.d {
+  position: relative;
+  background-color: aquamarine;
+}
+.fileUpload {
+  position: absolute;
+  overflow: hidden;
+  margin: 10px;
+  top: 0;
+}

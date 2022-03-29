@@ -1,18 +1,52 @@
 import Styles from './SignUp.module.css';
-import { useRef, useState } from 'react';
+import { useRef, useState, useEffect, isValidElement } from 'react';
 import { useAuth } from '../../../context/AuthContext';
 import { TextField, Button, Stack, Typography, Container } from '@mui/material';
 import SendIcon from '@mui/icons-material/Send';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import { useNavigate } from 'react-router-dom';
+import firebase from '../../../firebase';
+import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
+
+const { storage } = firebase;
 
 export default function SignIn() {
   const name = useRef('');
   const email = useRef('');
   const password = useRef('');
   const passwordConfirm = useRef('');
+  const [DP, setDP] = useState(null);
+  const [progress, setProgress] = useState(0);
+  const [DPURL, setDPURL] = useState(null);
 
   const navigate = useNavigate();
+
+  const uploadFile = async (file) => {
+    const fileRef = ref(storage, `/images/${file.name}`);
+    const uploading = uploadBytesResumable(fileRef, file);
+
+    uploading.on(
+      'state_changed',
+      (snapshot) => {
+        const progress = Math.round(
+          (snapshot.bytesTransferred / snapshot.totalBytes) * 100
+        );
+
+        setProgress(progress);
+      },
+      (error) => {
+        console.log(error);
+      },
+      async () => {
+        const URL = await getDownloadURL(fileRef);
+        setDPURL(URL);
+      }
+    );
+  };
+
+  useEffect(() => {
+    uploadFile(DP);
+  }, [DP]);
 
   const { signup } = useAuth();
 
@@ -32,6 +66,9 @@ export default function SignIn() {
         <Typography variant='h3' gutterBottom={true}>
           {' '}
           Sing Up !
+        </Typography>
+        <Typography variant='h3' gutterBottom={true}>
+          {progress}
         </Typography>
         <AccountCircleIcon
           style={{
@@ -68,6 +105,13 @@ export default function SignIn() {
             variant='filled'
             inputRef={passwordConfirm}
           />
+          <TextField
+            type='file'
+            variant='standard'
+            onChange={(e) => {
+              setDP(e.target.files[0]);
+            }}
+          />
           <Button
             variant='text'
             onClick={() => {
@@ -87,7 +131,8 @@ export default function SignIn() {
                 email.current.value,
                 password.current.value,
                 name.current.value,
-                passwordConfirm.current.value
+                passwordConfirm.current.value,
+                DPURL
               );
             }}
           >

@@ -9,9 +9,13 @@ import { ErrorProvider } from './context/ErrorContext';
 
 ReactDOM.render(
   <React.StrictMode>
-    <ErrorProvider>
-     
-    </ErrorProvider>
+    <Router>
+      <ErrorProvider>
+        <AuthProvider>
+          <App />
+        </AuthProvider>
+      </ErrorProvider>
+    </Router>
   </React.StrictMode>,
   document.getElementById('root')
 );

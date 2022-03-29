@@ -2,16 +2,15 @@
 import { initializeApp } from 'firebase/app';
 import { getFirestore } from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
+import { getStorage } from 'firebase/storage';
 
 const firebaseConfig = {
-  apiKey:
-    'AIzaSyATRWLFsvHG6gVx7ETYpVNoC06vQ--kBEE',
+  apiKey: 'AIzaSyATRWLFsvHG6gVx7ETYpVNoC06vQ--kBEE',
   authDomain: 'erp4-bb307.firebaseapp.com',
   projectId: 'erp4-bb307',
   storageBucket: 'erp4-bb307.appspot.com',
   messagingSenderId: '367618741186',
-  appId:
-    '1:367618741186:web:f93c723832fcfd4b2d3c5b',
+  appId: '1:367618741186:web:f93c723832fcfd4b2d3c5b',
   measurementId: 'G-TVZZQQTRDL',
 };
 
@@ -19,11 +18,13 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const auth = getAuth(app);
+const storage = getStorage(app);
 
 const obj = {
   app,
   db,
   auth,
+  storage,
 };
 
 export default obj;
