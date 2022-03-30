@@ -1,21 +1,7 @@
-.textField {
-  width: 100%;
-}
-
-.container {
-  height: 100%;
-  width: 100%;
+.wrap {
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  flex: 1;
   align-items: center;
-}
-.d {
-  position: relative;
-  background-color: aquamarine;
-}
-.fileUpload {
-  position: absolute;
-  overflow: hidden;
-  margin: 10px;
-  top: 0;
+  justify-content: space-between;
 }

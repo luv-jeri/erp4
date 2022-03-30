@@ -1,145 +1,114 @@
 import Styles from './SignUp.module.css';
-import { useRef, useState, useEffect, isValidElement } from 'react';
-import { useAuth } from '../../../context/AuthContext';
-import { TextField, Button, Stack, Typography, Container } from '@mui/material';
-import SendIcon from '@mui/icons-material/Send';
-import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import firebase from '../../../firebase';
-import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
-
-const { storage } = firebase;
-
+import {
+  TextField,
+  Button,
+  Stack,
+  Typography,
+  Container,
+  Box,
+  Stepper,
+  Step,
+  StepLabel,
+  Paper,
+} from '@mui/material';
+import { Outlet } from 'react-router-dom';
+import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
+import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 export default function SignIn() {
-  const name = useRef('');
-  const email = useRef('');
-  const password = useRef('');
-  const passwordConfirm = useRef('');
-  const [DP, setDP] = useState(null);
-  const [progress, setProgress] = useState(0);
-  const [DPURL, setDPURL] = useState(null);
-
+  const [step, setStep] = useState(0);
   const navigate = useNavigate();
-
-  const uploadFile = async (file) => {
-    const fileRef = ref(storage, `/images/${file.name}`);
-    const uploading = uploadBytesResumable(fileRef, file);
-
-    uploading.on(
-      'state_changed',
-      (snapshot) => {
-        const progress = Math.round(
-          (snapshot.bytesTransferred / snapshot.totalBytes) * 100
-        );
-
-        setProgress(progress);
-      },
-      (error) => {
-        console.log(error);
-      },
-      async () => {
-        const URL = await getDownloadURL(fileRef);
-        setDPURL(URL);
-      }
-    );
+  const steps = ['Persona Details 😧', 'Business Details', 'Delivery Details'];
+  const moveAhead = () => {
+    if (step < 3) {
+      setStep(step + 1);
+    }
+  };
+  const moveBack = () => {
+    if (step > 0) {
+      setStep(step - 1);
+    }
   };
 
   useEffect(() => {
-    uploadFile(DP);
-  }, [DP]);
-
-  const { signup } = useAuth();
+    if (step === 0) {
+      navigate('');
+    }
+    if (step === 1) {
+      navigate('/join/shop');
+    }
+  }, [step, navigate]);
 
   return (
-    <div className={Styles.container}>
+    <div className={Styles.wrap}>
+      <Typography variant='h4'>Let's take our first step..😀'</Typography>
       <Container
-        sx={{
-          width: '100%',
-          height: '100%',
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          justifyContent: 'center',
+        style={{
+          marginBottom: '2rem',
         }}
       >
-        {' '}
-        <Typography variant='h3' gutterBottom={true}>
-          {' '}
-          Sing Up !
-        </Typography>
-        <Typography variant='h3' gutterBottom={true}>
-          {progress}
-        </Typography>
-        <AccountCircleIcon
-          style={{
-            fontSize: '100px',
-            marginRight: '10px',
-          }}
-          color='primary'
-        />
-        <Stack
-          spacing={2}
-          style={{
-            width: '50%',
-          }}
-        >
-          <TextField id='text' required label='Name' variant='filled' inputRef={name} />
-          <TextField
-            id='email'
-            required
-            label='Email'
-            variant='filled'
-            inputRef={email}
-          />
-          <TextField
-            required
-            label='Password'
-            type='password'
-            variant='filled'
-            inputRef={password}
-          />
-          <TextField
-            required
-            label='Password'
-            type='password'
-            variant='filled'
-            inputRef={passwordConfirm}
-          />
-          <TextField
-            type='file'
-            variant='standard'
-            onChange={(e) => {
-              setDP(e.target.files[0]);
-            }}
-          />
-          <Button
-            variant='text'
-            onClick={() => {
-              navigate('/');
-            }}
-            style={{
-              justifyContent: 'flex-start',
-            }}
-          >
-            Already have an account?
-          </Button>
-          <Button
-            variant='contained'
-            endIcon={<SendIcon />}
-            onClick={async () => {
-              await signup(
-                email.current.value,
-                password.current.value,
-                name.current.value,
-                passwordConfirm.current.value,
-                DPURL
-              );
-            }}
-          >
-            Join us !
-          </Button>
-        </Stack>
+        <Outlet />
       </Container>
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+
+          width: '100%',
+        }}
+      >
+        <Button
+          onClick={moveBack}
+          style={{
+            borderRadius: '50%',
+            height: '5rem',
+            width: '5rem',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+          endIcon={
+            <ArrowBackIosNewIcon
+              style={{
+                fontSize: '3rem',
+              }}
+            />
+          }
+        ></Button>
+        <Stepper
+          style={{
+            flex: 1,
+          }}
+          activeStep={step}
+          alternativeLabel
+        >
+          {steps.map((label) => (
+            <Step key={label}>
+              <StepLabel>{label}</StepLabel>
+            </Step>
+          ))}
+        </Stepper>
+
+        <Button
+          onClick={moveAhead}
+          style={{
+            borderRadius: '50%',
+            height: '5rem',
+            width: '5rem',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+          endIcon={
+            <ArrowForwardIosIcon
+              style={{
+                fontSize: '3rem',
+              }}
+            />
+          }
+        ></Button>
+      </div>
     </div>
   );
 }

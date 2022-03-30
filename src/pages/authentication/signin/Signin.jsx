@@ -10,7 +10,6 @@ export default function SignIn() {
   const email = useRef('');
   const password = useRef('');
   const navigate = useNavigate();
-  
 
   const { signin } = useAuth();
 
@@ -22,41 +21,32 @@ export default function SignIn() {
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
-        justifyContent: 'center',
+        justifyContent: 'space-evenly',
+        flex: 1,
       }}
     >
-      <AccountCircleIcon
-        style={{
-          fontSize: '100px',
-          marginRight: '10px',
-        }}
-        color='primary'
-      />
+      <Typography variant='h4'>" Let's Start 🛍️ "</Typography>
       <Stack
         spacing={2}
         style={{
           width: '50%',
         }}
       >
-        <TextField id='email' required label='Email' variant='filled' inputRef={email} />
         <TextField
-          required
-          label='Password'
+          id='email'
+          placeholder='Email'
+          size='small'
+          variant='outlined'
+          inputRef={email}
+        />
+        <TextField
+          placeholder='Password'
           type='password'
-          variant='filled'
+          variant='outlined'
+          size='small'
           inputRef={password}
         />
-        <Button
-          variant='text'
-          onClick={() => {
-            navigate('/join');
-          }}
-          style={{
-            justifyContent: 'flex-start',
-          }}
-        >
-          New to the app?
-        </Button>
+
         <Button
           variant='contained'
           endIcon={<SendIcon />}
@@ -65,6 +55,19 @@ export default function SignIn() {
           }}
         >
           Login
+        </Button>
+        <Button
+          variant='text'
+          onClick={() => {
+            navigate('/join');
+          }}
+          style={{
+            justifyContent: 'flex-start',
+            width: '50%',
+            fontSize: '0.8rem',
+          }}
+        >
+          New to the app?
         </Button>
       </Stack>
     </Container>
