@@ -20,6 +20,7 @@ export default function SignIn() {
   const [step, setStep] = useState(0);
   const navigate = useNavigate();
   const steps = ['Persona Details 😧', 'Business Details', 'Delivery Details'];
+
   const moveAhead = () => {
     if (step < 3) {
       setStep(step + 1);
@@ -39,6 +40,7 @@ export default function SignIn() {
       navigate('/join/shop');
     }
   }, [step, navigate]);
+  const [count, setCount] = useState(0);
 
   return (
     <div className={Styles.wrap}>
@@ -48,7 +50,7 @@ export default function SignIn() {
           marginBottom: '2rem',
         }}
       >
-        <Outlet />
+        <Outlet context={[count, setCount]} />
       </Container>
       <div
         style={{
@@ -88,6 +90,15 @@ export default function SignIn() {
               <StepLabel>{label}</StepLabel>
             </Step>
           ))}
+          {/* <Step>
+          <StepLabel>Personal Details</StepLabel>
+        </Step>
+        <Step>
+          <StepLabel>Business Details</StepLabel>
+        </Step>
+        <Step>
+          <StepLabel>Contact Details</StepLabel>
+        </Step> */}
         </Stepper>
 
         <Button

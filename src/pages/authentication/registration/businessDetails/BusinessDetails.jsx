@@ -20,9 +20,11 @@ import InputLabel from '@mui/material/InputLabel';
 import InputAdornment from '@mui/material/InputAdornment';
 import firebase from '../../../../firebase';
 import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
-
+import { useOutletContext } from 'react-router-dom';
 const { storage } = firebase;
 export default function BusinessDetails() {
+  const [count, setCount] = useOutletContext();
+  const increment = () => setCount((c) => c + 1);
   const name = useRef('');
   const email = useRef('');
   const password = useRef('');
@@ -67,6 +69,7 @@ export default function BusinessDetails() {
         flexDirection: 'row',
       }}
     >
+      {count}
       <Box
         style={{
           display: 'flex',
