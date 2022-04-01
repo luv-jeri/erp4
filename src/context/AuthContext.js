@@ -32,6 +32,7 @@ export function AuthProvider({ children }) {
 
   useEffect(() => {
     const authListener = auth.onAuthStateChanged((user) => {
+      console.log('authListener', user);
       setLoading(false);
       setUser(user);
     });
