@@ -38,23 +38,36 @@ export function AuthProvider({ children }) {
     return authListener;
   }, []);
 
-  async function signup(email, password, name, confirmPassword, url) {
+  async function signup({
+    name,
+    email,
+    password,
+    DPURL,
+    businessName,
+    businessEmail,
+    address,
+    phone,
+    businessType,
+    deliveryName,
+    city,
+    logoURL,
+  }) {
     try {
-      if (!name || !email || !password || !confirmPassword) {
-        setError('Please fill all the fields');
-      }
-      if (password !== confirmPassword) {
-        setError('Passwords do not match');
-      }
-
       const newUser = await createUserWithEmailAndPassword(auth, email, password);
-
       if (newUser) {
-        const ref = doc(db, 'users', newUser.user.uid);
+        const ref = doc(db, 'seller', newUser.user.uid);
         const userDoc = await setDoc(ref, {
           name,
           email,
-          dp: url,
+          DP: DPURL,
+          businessName,
+          businessEmail,
+          address,
+          phone,
+          businessType,
+          deliveryName,
+          city,
+          logo: logoURL,
         });
         console.log('userDoc', userDoc);
       }

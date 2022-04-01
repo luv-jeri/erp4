@@ -1,6 +1,6 @@
 import React from 'react';
 import Styles from './BusinessDetails.module.css';
-import { useRef, useState, useEffect, isValidElement } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../../../context/AuthContext';
 import {
@@ -10,9 +10,8 @@ import {
   Typography,
   Container,
   Box,
-  Stepper,
-  Step,
-  StepLabel,
+  Select,
+  MenuItem,
 } from '@mui/material';
 import SendIcon from '@mui/icons-material/Send';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
@@ -20,20 +19,28 @@ import InputLabel from '@mui/material/InputLabel';
 import InputAdornment from '@mui/material/InputAdornment';
 import firebase from '../../../../firebase';
 import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
+
 import { useOutletContext } from 'react-router-dom';
 const { storage } = firebase;
 export default function BusinessDetails() {
-  const [count, setCount] = useOutletContext();
-  const increment = () => setCount((c) => c + 1);
-  const name = useRef('');
-  const email = useRef('');
-  const password = useRef('');
-  const passwordConfirm = useRef('');
-  const [DP, setDP] = useState(null);
-  const [progress, setProgress] = useState(0);
-  const [DPURL, setDPURL] = useState(null);
+  const {
+    businessName,
+    setBusinessName,
+    businessEmail,
+    setBusinessEmail,
+    address,
+    setAddress,
+    phone,
+    setPhone,
+    businessType,
+    setBusinessType,
+    logoURL,
+    setLogoURL,
+  } = useOutletContext();
 
-  const navigate = useNavigate();
+  const [progress, setProgress] = useState(0);
+  const [logo, setLogo] = useState(null);
+
   const uploadFile = async (file) => {
     const fileRef = ref(storage, `/images/${file.name}`);
     const uploading = uploadBytesResumable(fileRef, file);
@@ -52,16 +59,15 @@ export default function BusinessDetails() {
       },
       async () => {
         const URL = await getDownloadURL(fileRef);
-        setDPURL(URL);
+        setLogoURL(URL);
       }
     );
   };
 
   useEffect(() => {
-    uploadFile(DP);
-  }, [DP]);
+    uploadFile(logo);
+  }, [logo]);
 
-  const { signup } = useAuth();
   return (
     <Container
       style={{
@@ -69,7 +75,6 @@ export default function BusinessDetails() {
         flexDirection: 'row',
       }}
     >
-      {count}
       <Box
         style={{
           display: 'flex',
@@ -81,7 +86,7 @@ export default function BusinessDetails() {
       >
         <div
           style={{
-            backgroundImage: `url(${DPURL || 'https://source.unsplash.com/random'})`,
+            backgroundImage: `url(${logoURL || 'https://source.unsplash.com/random'})`,
           }}
           className={Styles.imageContainer}
         >
@@ -90,7 +95,7 @@ export default function BusinessDetails() {
             variant='outlined'
             placeholder='Upload DP'
             onChange={(e) => {
-              setDP(e.target.files[0]);
+              setLogo(e.target.files[0]);
             }}
             className={Styles.imagePicker}
           />
@@ -107,29 +112,51 @@ export default function BusinessDetails() {
             size='small'
             variant='outlined'
             placeholder='Shop Name'
-            inputRef={name}
+            value={businessName}
+            onChange={(e) => {
+              setBusinessName(e.target.value);
+            }}
           />
           <TextField
-            id='email'
             placeholder='Email'
             size='small'
             variant='outlined'
-            inputRef={email}
+            value={businessEmail}
+            onChange={(e) => {
+              setBusinessEmail(e.target.value);
+            }}
           />
           <TextField
-            placeholder='Password'
-            type='password'
-            variant='outlined'
-            inputRef={password}
+            placeholder='Address'
             size='small'
+            variant='outlined'
+            value={address}
+            onChange={(e) => {
+              setAddress(e.target.value);
+            }}
           />
           <TextField
-            placeholder='Password'
-            type='password'
-            variant='outlined'
+            placeholder='Phone'
             size='small'
-            inputRef={passwordConfirm}
+            type='number'
+            variant='outlined'
+            value={phone}
+            onChange={(e) => {
+              setPhone(e.target.value);
+            }}
           />
+          <Select
+            label='Business Type'
+            size='small'
+            variant='outlined'
+            onChange={(e) => {
+              setBusinessType(e.target.value);
+            }}
+            value={businessType}
+          >
+            <MenuItem value={'Seller'}>Seller</MenuItem>
+            <MenuItem value={'Retailer'}>Retailer</MenuItem>
+          </Select>
         </Stack>
       </Box>
     </Container>

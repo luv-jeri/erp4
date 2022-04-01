@@ -1,40 +1,31 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React from 'react';
 import Styles from './PersonalDetails.module.css';
-import { useRef, useState, useEffect, isValidElement } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../../../../context/AuthContext';
-import {
-  TextField,
-  Button,
-  Stack,
-  Typography,
-  Container,
-  Box,
-  Stepper,
-  Step,
-  StepLabel,
-} from '@mui/material';
-import SendIcon from '@mui/icons-material/Send';
-import AccountCircleIcon from '@mui/icons-material/AccountCircle';
-import InputLabel from '@mui/material/InputLabel';
-import InputAdornment from '@mui/material/InputAdornment';
+import { useState, useEffect } from 'react';
+import { TextField, Stack, Container, Box } from '@mui/material';
 import firebase from '../../../../firebase';
 import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
+
 import { useOutletContext } from 'react-router-dom';
 
 const { storage } = firebase;
 export default function PersonalDetails() {
-  const [count, setCount] = useOutletContext();
-  const increment = () => setCount((c) => c + 1);
-  const name = useRef('');
-  const email = useRef('');
-  const password = useRef('');
-  const passwordConfirm = useRef('');
-  const [DP, setDP] = useState(null);
-  const [progress, setProgress] = useState(0);
-  const [DPURL, setDPURL] = useState(null);
+  const {
+    name,
+    setName,
+    email,
+    setEmail,
+    password,
+    setPassword,
+    passwordConfirm,
+    setPasswordConfirm,
+    DPURL,
+    setDPURL,
+  } = useOutletContext();
 
-  const navigate = useNavigate();
+  const [progress, setProgress] = useState(0);
+  const [DP, setDP] = useState(null);
+
   const uploadFile = async (file) => {
     const fileRef = ref(storage, `/images/${file.name}`);
     const uploading = uploadBytesResumable(fileRef, file);
@@ -62,7 +53,6 @@ export default function PersonalDetails() {
     uploadFile(DP);
   }, [DP]);
 
-  const { signup } = useAuth();
   return (
     <Container
       style={{
@@ -70,7 +60,6 @@ export default function PersonalDetails() {
         flexDirection: 'row',
       }}
     >
-      {count}
       <Box
         style={{
           flex: 1,
@@ -82,20 +71,29 @@ export default function PersonalDetails() {
             size='small'
             variant='outlined'
             placeholder='Name'
-            inputRef={name}
+            value={name}
+            onChange={(e) => {
+              setName(e.target.value);
+            }}
           />
           <TextField
             id='email'
             placeholder='Email'
             size='small'
             variant='outlined'
-            inputRef={email}
+            value={email}
+            onChange={(e) => {
+              setEmail(e.target.value);
+            }}
           />
           <TextField
             placeholder='Password'
             type='password'
             variant='outlined'
-            inputRef={password}
+            value={password}
+            onChange={(e) => {
+              setPassword(e.target.value);
+            }}
             size='small'
           />
           <TextField
@@ -103,7 +101,10 @@ export default function PersonalDetails() {
             type='password'
             variant='outlined'
             size='small'
-            inputRef={passwordConfirm}
+            value={passwordConfirm}
+            onChange={(e) => {
+              setPasswordConfirm(e.target.value);
+            }}
           />
         </Stack>
       </Box>

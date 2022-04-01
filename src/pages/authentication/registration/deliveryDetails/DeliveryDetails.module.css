@@ -1,0 +1,21 @@
+.imageContainer {
+  position: relative;
+  background-position: 'center';
+  background-repeat: no-repeat;
+  background-size: cover;
+  border: 1px solid #e6e6e6;
+  border-radius: 50%;
+  height: 200px;
+  width: 200px;
+}
+
+.imagePicker {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  z-index: 1;
+  opacity: 0;
+}
+
