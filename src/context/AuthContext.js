@@ -9,7 +9,7 @@ import {
 
 import firebase from '../firebase';
 
-import { doc, setDoc } from 'firebase/firestore';
+import { doc, setDoc, getDoc } from 'firebase/firestore';
 
 import { useError } from './ErrorContext';
 
@@ -27,14 +27,27 @@ const { auth, db } = firebase;
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
+  const [details, setDetails] = useState(null);
   const [loading, setLoading] = useState(true);
   const { setError } = useError();
 
   useEffect(() => {
-    const authListener = auth.onAuthStateChanged((user) => {
+    const authListener = auth.onAuthStateChanged(async (user) => {
       console.log('authListener', user);
       setLoading(false);
       setUser(user);
+
+      
+      const userRef = doc(db, `seller`, user.uid);
+
+      const sellersData = await getDoc(userRef);
+
+      if (sellersData.exists()) {
+        setDetails(sellersData.data());
+      } else {
+        signOut(auth);
+        setError('No details found , please signup');
+      }
     });
     return authListener;
   }, []);
@@ -96,6 +109,7 @@ export function AuthProvider({ children }) {
 
   const value = {
     user,
+    details,
     setUser,
     signup,
     signin,

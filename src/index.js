@@ -6,16 +6,31 @@ import reportWebVitals from './reportWebVitals';
 import { BrowserRouter as Router } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
 import { ErrorProvider } from './context/ErrorContext';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { green, yellow, orange } from '@mui/material/colors';
+
+const theme = createTheme({
+  palette: {
+    primary: green,
+    secondary: yellow,
+    error: orange,
+  },
+  typography: {
+    fontFamily: 'Poppins',
+  },
+});
 
 ReactDOM.render(
   <React.StrictMode>
-    <Router>
-      <ErrorProvider>
-        <AuthProvider>
-          <App />
-        </AuthProvider>
-      </ErrorProvider>
-    </Router>
+    <ThemeProvider theme={theme}>
+      <Router>
+        <ErrorProvider>
+          <AuthProvider>
+            <App />
+          </AuthProvider>
+        </ErrorProvider>
+      </Router>
+    </ThemeProvider>
   </React.StrictMode>,
   document.getElementById('root')
 );

@@ -19,7 +19,7 @@ export default function SignIn() {
   const [step, setStep] = useState(0);
   const steps = ['Persona Details 😧', 'Business Details', 'Delivery Details'];
 
-  return ( 
+  return (
     <div className={Styles.wrap}>
       <Paper
         elevation={12}
@@ -33,7 +33,7 @@ export default function SignIn() {
           flexDirection: 'column',
           position: 'relative',
         }}
-      >  
+      >
         <Outlet />
       </Paper>
     </div>

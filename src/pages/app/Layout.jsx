@@ -1,71 +1,97 @@
-import { useState, useRef } from 'react';
+import * as React from 'react';
+import AppBar from '@mui/material/AppBar';
+import Box from '@mui/material/Box';
+import Toolbar from '@mui/material/Toolbar';
+import IconButton from '@mui/material/IconButton';
+import Typography from '@mui/material/Typography';
+import Menu from '@mui/material/Menu';
+import MenuIcon from '@mui/icons-material/Menu';
+import Container from '@mui/material/Container';
+import Avatar from '@mui/material/Avatar';
+import Button from '@mui/material/Button';
+import Tooltip from '@mui/material/Tooltip';
+import MenuItem from '@mui/material/MenuItem';
+import { useAuth } from '../../context/AuthContext';
 import { Outlet } from 'react-router-dom';
-import { Snackbar, Button, Drawer, Box, Container, TextField } from '@mui/material';
-import MuiAlert from '@mui/material/Alert';
-import { useAuth } from './../../context/AuthContext';
 
-import { ref, uploadBytesResumable, getDownloadURL, uploadBytes } from 'firebase/storage';
-import firebase from '../../firebase';
-const { storage } = firebase;
+const pages = ['Products', 'Pricing', 'Blog'];
 
-export default function Layout() {
-  const file = useRef(null);
+const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
 
-  const uploadFile = async (file) => {
-    const fileRef = ref(storage, `images/${file.current.files[0].name}`);
+const ResponsiveAppBar = () => {
 
-    const uploadedFile = await uploadBytes(fileRef, file.current.files[0]);
+  const { user , details, signOut } = useAuth();
 
-    const URL = await getDownloadURL(fileRef);
+  console.log('details', details);
+  const [anchorElNav, setAnchorElNav] = React.useState(null);
+  const [anchorElUser, setAnchorElUser] = React.useState(null);
 
-    // uploadedFile.on(
-    //   'state_change',
-    //   (val) => {
-    //     const progress = Math.round((val.bytesTransferred / val.totalBytes) * 100);
-    //     console.log(progress);
-    //   },
-    //   (err) => {
-    //     console.log(err);
-    //   },
-    //   async () => {
-    //     const URL = await getDownloadURL(uploadedFile.snapshot.ref);
-    //     console.log(URL);
-    //   }
-    // );
+  const handleOpenUserMenu = (event) => {
+    setAnchorElUser(event.currentTarget);
   };
 
-  const upload = async (file) => {
-    const ref_ = ref(storage, `images/${file.current.files[0].name}`);
-    const uploadTask = uploadBytesResumable(ref_, file.current.files[0]);
-    uploadTask.on(
-      'state_changed',
-      (snapshot) => {
-        const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-        console.log(progress);
-      },
-      (err) => {
-        console.log(err);
-      },
-      () => {
-        getDownloadURL(uploadTask.snapshot.ref).then((url) => {
-          console.log(url);
-        });
-      }
-    );
+  const handleCloseNavMenu = () => {
+    setAnchorElNav(null);
   };
-  const { signout } = useAuth();
+
+  const handleCloseUserMenu = () => {
+    setAnchorElUser(null);
+  };
+
   return (
-    <div>
+    <>
+      <AppBar position='static'>
+        <Container maxWidth='xl'>
+          <Toolbar disableGutters>
+            <Avatar alt={details?.name} src={details?.logo} />
+
+            <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
+              {pages.map((page) => (
+                <Button
+                  key={page}
+                  onClick={handleCloseNavMenu}
+                  sx={{ my: 2, color: 'white', display: 'block' }}
+                >
+                  {page}
+                </Button>
+              ))}
+            </Box>
+
+            <Box sx={{ flexGrow: 0 }}>
+              <Tooltip title='Open settings'>
+                <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+                  <Avatar alt={details?.name} src={details?.DP} />
+                </IconButton>
+              </Tooltip>
+
+              <Menu
+                sx={{ mt: '45px' }}
+                id='menu-appbar'
+                anchorEl={anchorElUser}
+                anchorOrigin={{
+                  vertical: 'top',
+                  horizontal: 'right',
+                }}
+                transformOrigin={{
+                  vertical: 'top',
+                  horizontal: 'right',
+                }}
+                
+                open={Boolean(anchorElUser)}
+                onClose={handleCloseUserMenu}
+              >
+                {settings.map((setting) => (
+                  <MenuItem key={setting} onClick={handleCloseUserMenu}>
+                    <Typography textAlign='center'>{setting}</Typography>
+                  </MenuItem>
+                ))}
+              </Menu>
+            </Box>
+          </Toolbar>
+        </Container>
+      </AppBar>
       <Outlet />
-      <TextField type='file' inputRef={file} />
-      <Button
-        onClick={() => {
-          signout();
-        }}
-        variant='contained'
-      >
-        Upload
-      </Button>
-    </div>
+    </>
   );
-}
+};
+export default ResponsiveAppBar;
