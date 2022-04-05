@@ -1,6 +1,6 @@
 import { useState, useEffect, useContext, createContext } from 'react';
 import Stack from '@mui/material/Stack';
-import LinearProgress from '@mui/material/LinearProgress';
+import { Backdrop, CircularProgress } from '@mui/material';
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
@@ -27,17 +27,18 @@ const { auth, db } = firebase;
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
-  const [details, setDetails] = useState(null);
+  const [details, setDetails] = useState(null); // user details
   const [loading, setLoading] = useState(true);
   const { setError } = useError();
 
   useEffect(() => {
     const authListener = auth.onAuthStateChanged(async (user) => {
-      console.log('authListener', user);
-      setLoading(false);
+      console.log('authListener', user); // email and uid
+      // setting loading to false after user is logged in
+      
       setUser(user);
 
-      
+      //` Getting user details from fireStore database
       const userRef = doc(db, `seller`, user.uid);
 
       const sellersData = await getDoc(userRef);
@@ -48,6 +49,8 @@ export function AuthProvider({ children }) {
         signOut(auth);
         setError('No details found , please signup');
       }
+
+      setLoading(false);
     });
     return authListener;
   }, []);
@@ -119,11 +122,9 @@ export function AuthProvider({ children }) {
   return (
     <AuthContext.Provider value={value}>
       {loading ? (
-        <Stack sx={{ width: '100%', color: 'grey.500' }} spacing={10}>
-          <LinearProgress color='secondary' />
-          <LinearProgress color='success' />
-          <LinearProgress color='inherit' />
-        </Stack>
+        <Backdrop open={loading}>
+          <CircularProgress color='inherit' />
+        </Backdrop>
       ) : (
         children
       )}

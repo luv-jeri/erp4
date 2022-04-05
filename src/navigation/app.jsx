@@ -8,7 +8,7 @@ export default function AppNav() {
   return (
     <Routes>
       <Route path='/' element={<Layout />}>
-        <Route path='home' element={<Home />} />
+        <Route path='' element={<Home />} />
       </Route>
       <Route path='*' element={<_404 />} />
     </Routes>

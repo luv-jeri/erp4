@@ -195,15 +195,7 @@ export default function SignIn() {
               <StepLabel>{label}</StepLabel>
             </Step>
           ))}
-          {/* <Step>
-          <StepLabel>Personal Details</StepLabel>
-        </Step>
-        <Step>
-          <StepLabel>Business Details</StepLabel>
-        </Step>
-        <Step>
-          <StepLabel>Contact Details</StepLabel>
-        </Step> */}
+          
         </Stepper>
 
         <Button
