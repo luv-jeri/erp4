@@ -1,0 +1,25 @@
+{
+    "sizes": [
+        "xs",
+        "s",
+        "m",
+        "l",
+        "xl"
+    ],
+    "colors": [
+        "red",
+        "blue",
+        "green",
+        "yellow",
+        "black"
+    ],
+    "brands": [
+        "nike",
+        "adidas",
+        "puma",
+        "asics",
+        "converse",
+        "fila",
+        "other"
+    ]
+}

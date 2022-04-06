@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import Box from '@mui/material/Box';
+import Styles from './Home.module.css';
 
 import {
   Stepper,
@@ -10,20 +10,25 @@ import {
   Radio,
   Select,
   MenuItem,
-  SpeedDial,
-  SpeedDialIcon,
-  SpeedDialAction,
+  Step,
+  StepLabel,
+  StepContent,
+  Button,
+  Typography,
 } from '@mui/material';
-import Step from '@mui/material/Step';
-import StepLabel from '@mui/material/StepLabel';
-import StepContent from '@mui/material/StepContent';
-import Button from '@mui/material/Button';
-import Paper from '@mui/material/Paper';
-import Typography from '@mui/material/Typography';
 
+import UploadImage from '../../components/UploadImage/UploadImage';
+import { useError } from '../../context/ErrorContext';
 import create from '../../functions/create';
 
+import CLOTHING from '../../constants/clothing';
+
 export default function Home() {
+  const { setError } = useError();
+  const { sizes } = CLOTHING;
+  const { brands } = CLOTHING;
+  const { colors } = CLOTHING;
+
   // ------
   // Upload Images 5 images -> as an array
   // Brand ? -> as a string
@@ -36,11 +41,19 @@ export default function Home() {
   // ~ Upload images function -> parameter (file) -> return URL
 
   const [name, setName] = useState('');
+
   const [type, setType] = useState('');
   const [size, setSize] = useState('');
   const [price, setPrice] = useState('');
   const [gender, setGender] = useState('');
 
+  const [images, setImages] = useState([]);
+
+  const handleImage = (url) => {
+    setImages((current) => [...current, url]);
+  };
+
+  console.log(images);
   const [activeStep, setActiveStep] = useState(0);
 
   const handleNext = () => {
@@ -60,7 +73,22 @@ export default function Home() {
     setGender(event.target.value);
   };
 
-  const sizes = ['xs', 's', 'm', 'l', 'xl', 'xxl'];
+  const complete = async () => {
+    try {
+      await create('clothes', {
+        name,
+        type,
+        size,
+        price,
+        gender,
+        images,
+      });
+    } catch (e) {
+      setError(e);
+    }
+  };
+
+  const [count, setCount] = useState(1);
 
   return (
     <Container>
@@ -72,6 +100,20 @@ export default function Home() {
           <StepContent>
             <Divider />
             <Stack>
+              {[...Array(count)].map(() => {
+                return <UploadImage handleImage={handleImage} />;
+              })}
+
+              <Button
+                onClick={() => {
+                  setCount(count + 1);
+                }}
+              >
+                Add more
+              </Button>
+              {/* {[...Array(5)].map(() => {
+                return ;
+              })} */}
               <TextField
                 placeholder='Name'
                 size='small'
@@ -186,22 +228,18 @@ export default function Home() {
               ))}
             </Select>
             <Button onClick={handleBack}>Back</Button>
-            <Button
-              onClick={() => {
-                create('clothes', {
-                  name,
-                  type,
-                  size,
-                  price,
-                  gender,
-                });
-              }}
-            >
-              Done !
-            </Button>
+            <Button onClick={complete}>Done !</Button>
           </StepContent>
         </Step>
       </Stepper>
     </Container>
   );
 }
+
+// const handImages = (value) => {
+//   setArr([...arr, value]);
+
+//   console.log(arr);
+// };
+
+// handImages("www.fireabe/asdinfs");
