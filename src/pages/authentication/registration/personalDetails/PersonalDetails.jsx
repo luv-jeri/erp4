@@ -10,6 +10,7 @@ import { useOutletContext } from 'react-router-dom';
 
 const { storage } = firebase;
 export default function PersonalDetails() {
+  
   const {
     name,
     setName,

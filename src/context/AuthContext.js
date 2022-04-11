@@ -35,19 +35,21 @@ export function AuthProvider({ children }) {
     const authListener = auth.onAuthStateChanged(async (user) => {
       console.log('authListener', user); // email and uid
       // setting loading to false after user is logged in
-      
+
       setUser(user);
 
       //` Getting user details from fireStore database
-      const userRef = doc(db, `seller`, user.uid);
+      if (user) {
+        const userRef = doc(db, `seller`, user.uid);
 
-      const sellersData = await getDoc(userRef);
+        const sellersData = await getDoc(userRef);
 
-      if (sellersData.exists()) {
-        setDetails(sellersData.data());
-      } else {
-        signOut(auth);
-        setError('No details found , please signup');
+        if (sellersData.exists()) {
+          setDetails(sellersData.data());
+        } else {
+          signOut(auth);
+          setError('No details found , please signup');
+        }
       }
 
       setLoading(false);

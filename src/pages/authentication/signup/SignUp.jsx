@@ -50,7 +50,7 @@ export default function SignIn() {
   const [passwordConfirm, setPasswordConfirm] = useState('');
   const [DPURL, setDPURL] = useState(null);
 
-  // Bussiness Details
+  // Business Details
   const [businessName, setBusinessName] = useState('');
   const [businessEmail, setBusinessEmail] = useState('');
   const [address, setAddress] = useState('');
@@ -195,17 +195,11 @@ export default function SignIn() {
               <StepLabel>{label}</StepLabel>
             </Step>
           ))}
-          
         </Stepper>
 
         <Button
           onClick={moveAhead}
           style={{
-            borderRadius: '50%',
-            height: '5rem',
-            width: '5rem',
-            alignItems: 'center',
-            justifyContent: 'center',
             display: step === 3 ? 'none' : 'block',
           }}
           endIcon={
